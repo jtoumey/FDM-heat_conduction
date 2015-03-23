@@ -43,9 +43,11 @@ real k
 !
 !...System parameters
 !   Temperatures
-T_0   = 350. ! [K] temp at the left wall (given)
-T_L   = 500. ! [K] temp at the right wall (estimate)
-T_inf = 500. ! [K] ambient temp (given)
+T_0    = 350. ! [K] temp at the left wall (given)
+T_L    = 500. ! [K] temp at the right wall (estimate)
+T_inf  = 500. ! [K] ambient temp (given)
+n_iter = 1    !     iteration count
+tol    = 1.   !     tolerance 
 !   physical parameters
 a = 0.01  ! [W/m-K]
 b = 0.001 ! [W/m-K^2]
@@ -71,7 +73,7 @@ do while (tol .gt. 1.e-3)
    ! save IC to check convergence
    T_old = T; 
    ! write current cycle, error, temperature at right bndry
-   !write(6,401)n_iter,resid,T(n)
+   write(6,401)n_iter,tol,T(n)
    !
    !...Construct solution vector f
    !   interior points
@@ -89,8 +91,11 @@ do while (tol .gt. 1.e-3)
    c5 = -2*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
    f(ii-1) = (a + b*T(ii)**2)*( c5 - 2*T(ii  ) +T(ii-1))/(dx**2) &
            + (2 * b*T(ii)   )*((c5 -   T(ii-1))/(2*dx))**2 + Q
+   !   Test convergence
+   tol = maxval(T - T_old)
+   n_iter = n_iter + 1
 end do
-
-401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,'T_L = ',f14.7,'  ***')
+!
+401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
 !
 END  
