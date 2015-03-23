@@ -25,12 +25,14 @@
 PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
-integer n,ii
+integer n,ii,
 parameter (n=81) ! number of grid points
+integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
 double precision T_0,T_L,T_inf,T_IC(n),dT,T_old(n)
 real tol
+real c1,c2,c3,c4
 !
 !...INPUT SECTION
 !
@@ -67,8 +69,16 @@ do while tol > 1.e-3
    ! save IC to check convergence
    T_old = T; 
    ! write current cycle, error, temperature at right bndry
-
-
-
+   !write(6,401)n_iter,resid,T(n)
+   !
+   !...Construct solution vector f
+   !   interior points
+   do ii = 2:n-1
+      ! interior pts
+      c1 = a + b*T(ii)
+      c2 = (T(ii+1) - 2*T(ii) + T(ii-1))/dx**2
 end do
+
+401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,'T_L = ',f14.7,'  ***')
+!
 END  
