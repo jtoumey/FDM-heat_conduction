@@ -31,7 +31,7 @@ integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
 double precision T_0,T_L,T_inf,T(n),dT,T_old(n)
-double precision f(n-1)
+double precision f(n-1),J(n-1,n-1)
 real tol
 real c1,c2,c3,c4,c5
 real k
@@ -91,6 +91,10 @@ do while (tol .gt. 1.e-3)
    c5 = -2*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
    f(ii-1) = (a + b*T(ii)**2)*( c5 - 2*T(ii  ) +T(ii-1))/(dx**2) &
            + (2 * b*T(ii)   )*((c5 -   T(ii-1))/(2*dx))**2 + Q
+   !...Construct Jacobian
+   !   Left boundary, Dirichlet b.c.
+   ii = 1
+   J(ii,1) = 0
    !   Test convergence
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
