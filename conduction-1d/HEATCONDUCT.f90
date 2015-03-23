@@ -29,7 +29,7 @@ integer n,ii
 parameter (n=81) ! number of grid points
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T_IC
+double precision T_0,T_L,T_inf,T_IC(n),dT
 !
 !...INPUT SECTION
 !
@@ -49,12 +49,16 @@ h = 50.   ! [W/K-m^2]
 !
 !...Grid setup
 !
-L  = 0.2          ! [m] Length of domain
-dx = L/float(n-1) ! [m] grid spacing
-
-do ii = 1,n+1
+L  = 0.2                  ! [m] Length of domain
+dx = L/float(n-1)         ! [m] grid spacing
+dT = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
+!
+!...grid vector
+!
+do ii = 1,n
    x(ii) = (ii-1)*dx
-   write(*,*)x(ii)
+   T_IC(ii) = T_0+(ii-1)*dT
+   write(*,*)T_IC(ii)
 end do
 
 
