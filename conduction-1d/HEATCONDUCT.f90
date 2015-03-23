@@ -25,14 +25,16 @@
 PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
-integer n,ii,
+integer n,ii
 parameter (n=81) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T_IC(n),dT,T_old(n)
+double precision T_0,T_L,T_inf,T(n),dT,T_old(n)
+double precision f(n-1)
 real tol
-real c1,c2,c3,c4
+real c1,c2,c3,c4,c5
+real k
 !
 !...INPUT SECTION
 !
@@ -60,12 +62,12 @@ dT = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
 !
 do ii = 1,n
    x(ii) = (ii-1)*dx
-   T_IC(ii) = T_0+(ii-1)*dT
+   T(ii) = T_0+(ii-1)*dT
 end do
 !
 !...Begin Newton iteration
 !
-do while tol > 1.e-3
+do while (tol .gt. 1.e-3)
    ! save IC to check convergence
    T_old = T; 
    ! write current cycle, error, temperature at right bndry
@@ -73,10 +75,20 @@ do while tol > 1.e-3
    !
    !...Construct solution vector f
    !   interior points
-   do ii = 2:n-1
+   do ii = 2,n-1
       ! interior pts
-      c1 = a + b*T(ii)
+      c1 = a + b*T(ii)**2
       c2 = (T(ii+1) - 2*T(ii) + T(ii-1))/dx**2
+      c3 = 2*b*T(ii)
+      c4 = ((T(ii+1) - T(ii-1))/(2*dx))**2
+      f(ii-1) = c1*c2 + c3*c4 + Q
+   end do
+   !   Right boundary, Robin b.c.
+   ii = n
+   k  = a + b*T(ii)**2
+   c5 = -2*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
+   f(ii-1) = (a + b*T(ii)**2)*( c5 - 2*T(ii  ) +T(ii-1))/(dx**2) &
+           + (2 * b*T(ii)   )*((c5 -   T(ii-1))/(2*dx))**2 + Q
 end do
 
 401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,'T_L = ',f14.7,'  ***')
