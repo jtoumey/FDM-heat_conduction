@@ -29,7 +29,8 @@ integer n,ii
 parameter (n=81) ! number of grid points
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T_IC(n),dT
+double precision T_0,T_L,T_inf,T_IC(n),dT,T_old(n)
+real tol
 !
 !...INPUT SECTION
 !
@@ -58,8 +59,16 @@ dT = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
 do ii = 1,n
    x(ii) = (ii-1)*dx
    T_IC(ii) = T_0+(ii-1)*dT
-   write(*,*)T_IC(ii)
 end do
+!
+!...Begin Newton iteration
+!
+do while tol > 1.e-3
+   ! save IC to check convergence
+   T_old = T; 
+   ! write current cycle, error, temperature at right bndry
 
 
+
+end do
 END  
