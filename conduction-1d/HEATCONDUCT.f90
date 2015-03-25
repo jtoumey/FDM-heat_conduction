@@ -81,57 +81,56 @@ do while (tol .gt. 1.e-3)
    do ii = 2,n-1
       ! interior pts
       c1 = a + b*T(ii)**2
-      c2 = (T(ii+1) - 2*T(ii) + T(ii-1))/dx**2
-      c3 = 2*b*T(ii)
-      c4 = ((T(ii+1) - T(ii-1))/(2*dx))**2
+      c2 = (T(ii+1) - 2.*T(ii) + T(ii-1))/dx**2
+      c3 = 2.*b*T(ii)
+      c4 = ((T(ii+1) - T(ii-1))/(2.*dx))**2
       f(ii-1) = c1*c2 + c3*c4 + Q
    end do
    !   Right boundary, Robin b.c.
    ii = n
    k  = a + b*T(ii)**2
-   c5 = -2*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
-   f(ii-1) = (a + b*T(ii)**2)*( c5 - 2*T(ii  ) +T(ii-1))/(dx**2) &
-           + (2 * b*T(ii)   )*((c5 -   T(ii-1))/(2*dx))**2 + Q
+   c5 = -2.*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
+   f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
+           + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
    !...Construct Jacobian
    !   Left boundary, Dirichlet b.c.
    ii = 1
-   J(ii,1) = 0
-   J(ii,2) = b*(T(ii+2)   - T(ii))**2/(2*dx**2) - 2*(b*T(ii+1)**2 &
-           + a)/dx**2 + (2*T(ii+1)*b*(T(ii) - 2*T(ii+1) + T(ii+2)))/dx**2
-   J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
-           - T(ii))/(2*dx**2)
+   J(ii,1) = 0.
+   J(ii,2) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
+           + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
+   J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+           - T(ii))/(2.*dx**2)
    ! Interior points
    do ii = 2,n-2
-        J(ii,1) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
-                - T(ii))/(2*dx**2)
-        J(ii,2) =  b*(T(ii+2)   - T(ii))**2/(2*dx**2) &
-                -  2*(b*T(ii+1)**2 + a)/dx**2 + (2*T(ii+1)*b*(T(ii) &
-                -  2*T(ii+1) + T(ii+2)))/dx**2
-        J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
-                - T(ii))/(2*dx**2)
+        J(ii,1) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+                - T(ii))/(2.*dx**2)
+        J(ii,2) =  b*(T(ii+2)   - T(ii))**2/(2.*dx**2) &
+                -  2.*(b*T(ii+1)**2 + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) &
+                -  2.*T(ii+1) + T(ii+2)))/dx**2
+        J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+                - T(ii))/(2.*dx**2)
    end do
    
    !   Right boundary; Robin bc
    ii = n-1
-   J(ii,1) = 2*(b*T(ii+1)**2 + a)/(dx**2)
+   J(ii,1) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
    
    !   Coefficients of the derivative
    C6 = b*T(ii+1)**2 + a
-   T1 = 2*b*h**2*(T(ii+1) - T_inf)**2/C6**2
-   T2 = 2*T(ii+1)*b*(2*T(ii+1) - 2*T(ii) + 2*dx*h*(T(ii+1) &
+   T1 = 2.*b*h**2*(T(ii+1) - T_inf)**2/C6**2
+   T2 = 2.*T(ii+1)*b*(2.*T(ii+1) - 2.*T(ii) + 2.*dx*h*(T(ii+1) &
       - T_inf)/C6)/dx**2
-   T3 = C6*(2*dx*h/C6 - (4*T(ii+1)*b*dx*h*(T(ii+1) - T_inf))/C6**2 &
-      + 2)/dx**2
-   T4 = (2*T(ii+1)*b*h**2*(2*T(ii+1) - 2*T_inf))/C6**2
-   T5 = 8*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
+   T3 = C6*(2.*dx*h/C6 - (4.*T(ii+1)*b*dx*h*(T(ii+1) - T_inf))/C6**2 &
+      + 2.)/dx**2
+   T4 = (2.*T(ii+1)*b*h**2*(2.*T(ii+1) - 2.*T_inf))/C6**2
+   T5 = 8.*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
    J(ii,2) = T1 - T2 - T3 + T4 - T5
-   J(ii,3) = 0   
+   J(ii,3) = 0.
     
    !   Solve for dT: J(T_0)*dT = -F(T_0)  
    call thomas(n,J(:,1),J(:,2),J(:,3),-f,dT)
-!   dT = thomas(J(:,1),J(:,2),J(:,3),-f');
-!   dT = [0 dT]; % Because the left value does not change (dirichlet)
-!:   T = T + dT;
+   dT = [0., dT]; ! Because the left value does not change (dirichlet)
+   T = T + dT;
    
    !   Test convergence
    tol = maxval(T - T_old)
