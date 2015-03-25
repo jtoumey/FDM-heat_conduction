@@ -95,6 +95,40 @@ do while (tol .gt. 1.e-3)
    !   Left boundary, Dirichlet b.c.
    ii = 1
    J(ii,1) = 0
+   J(ii,2) = b*(T(ii+2)   - T(ii))**2/(2*dx**2) - 2*(b*T(ii+1)**2 &
+           + a)/dx**2 + (2*T(ii+1)*b*(T(ii) - 2*T(ii+1) + T(ii+2)))/dx**2
+   J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
+           - T(ii))/(2*dx**2)
+   ! Interior points
+   do ii = 2,n-2
+        J(ii,1) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
+                - T(ii))/(2*dx**2)
+        J(ii,2) =  b*(T(ii+2)   - T(ii))**2/(2*dx**2) &
+                -  2*(b*T(ii+1)**2 + a)/dx**2 + (2*T(ii+1)*b*(T(ii) &
+                -  2*T(ii+1) + T(ii+2)))/dx**2
+        J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
+                - T(ii))/(2*dx**2)
+   end do
+   !   Right boundary; Robin bc
+   ii = n-1
+   J(ii,1) = 2*(b*T(ii+1)**2 + a)/(dx**2)
+   ! Coefficients of the derivative
+   C6 = b*T(ii+1)**2 + a
+   T1 = 2*b*h**2*(T(ii+1) - T_inf)**2/C6**2
+   T2 = 2*T(ii+1)*b*(2*T(ii+1) - 2*T(ii) + 2*dx*h*(T(ii+1) &
+      - T_inf)/C6)/dx**2
+   T3 = C6*(2*dx*h/C6 - (4*T(ii+1)*b*dx*h*(T(ii+1) - T_inf))/C6**2 &
+      + 2)/dx**2
+   T4 = (2*T(ii+1)*b*h**2*(2*T(ii+1) - 2*T_inf))/C6**2
+   T5 = 8*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
+   J(ii,2) = T1 - T2 - T3 + T4 - T5
+   J(ii,3) = 0   
+    
+   ! Solve for dT: J(T_0)*dT = -F(T_0)  
+!   dT = thomas(J(:,1),J(:,2),J(:,3),-f');
+!   dT = [0 dT]; % Because the left value does not change (dirichlet)
+!:   T = T + dT;
+   
    !   Test convergence
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
@@ -102,4 +136,4 @@ end do
 !
 401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
 !
-END  
+END
