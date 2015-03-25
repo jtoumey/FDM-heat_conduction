@@ -46,8 +46,8 @@ real k
 T_0    = 350. ! [K] temp at the left wall (given)
 T_L    = 500. ! [K] temp at the right wall (estimate)
 T_inf  = 500. ! [K] ambient temp (given)
-n_iter = 1    !     iteration count
-tol    = 1.   !     tolerance 
+n_iter = 1
+tol    = 1.
 !   physical parameters
 a = 0.01  ! [W/m-K]
 b = 0.001 ! [W/m-K^2]
@@ -57,7 +57,7 @@ h = 50.   ! [W/K-m^2]
 !...Grid setup
 !
 L  = 0.2                  ! [m] Length of domain
-dx = L/float(n-1)         ! [m] grid spacing
+dx = L/float(n-1)         ! [m]
 dT = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
 !
 !...grid vector
