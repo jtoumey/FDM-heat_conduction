@@ -30,10 +30,11 @@ parameter (n=81) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T(n),dT,T_old(n)
+double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n),dT
 double precision f(n-1),J(n-1,n-1)
 real tol
-real c1,c2,c3,c4,c5
+real c1,c2,c3,c4,c5,c6
+real T1,T2,T3,T4,T5
 real k
 !
 !...INPUT SECTION
@@ -56,15 +57,15 @@ h = 50.   ! [W/K-m^2]
 !
 !...Grid setup
 !
-L  = 0.2                  ! [m] Length of domain
-dx = L/float(n-1)         ! [m]
-dT = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
+L     = 0.2                  ! [m] Length of domain
+dx    = L/float(n-1)         ! [m]
+dT_ic = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
 !
 !...grid vector
 !
 do ii = 1,n
    x(ii) = (ii-1)*dx
-   T(ii) = T_0+(ii-1)*dT
+   T(ii) = T_0+(ii-1)*dT_ic
 end do
 !
 !...Begin Newton iteration
@@ -109,10 +110,12 @@ do while (tol .gt. 1.e-3)
         J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2*(T(ii+2) &
                 - T(ii))/(2*dx**2)
    end do
+   
    !   Right boundary; Robin bc
    ii = n-1
    J(ii,1) = 2*(b*T(ii+1)**2 + a)/(dx**2)
-   ! Coefficients of the derivative
+   
+   !   Coefficients of the derivative
    C6 = b*T(ii+1)**2 + a
    T1 = 2*b*h**2*(T(ii+1) - T_inf)**2/C6**2
    T2 = 2*T(ii+1)*b*(2*T(ii+1) - 2*T(ii) + 2*dx*h*(T(ii+1) &
@@ -124,7 +127,8 @@ do while (tol .gt. 1.e-3)
    J(ii,2) = T1 - T2 - T3 + T4 - T5
    J(ii,3) = 0   
     
-   ! Solve for dT: J(T_0)*dT = -F(T_0)  
+   !   Solve for dT: J(T_0)*dT = -F(T_0)  
+   call thomas(n,J(:,1),J(:,2),J(:,3),-f,dT)
 !   dT = thomas(J(:,1),J(:,2),J(:,3),-f');
 !   dT = [0 dT]; % Because the left value does not change (dirichlet)
 !:   T = T + dT;
