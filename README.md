@@ -5,5 +5,5 @@
 * Tested with `gcc 4.6.3`
 
 ## Instructions:
-1. Compile with: `gfortran HEATCONDUCT.f90 thomas.f90 resize_array.f90 -o heatconduct.`
+1. Compile with: `gfortran HEATCONDUCT.f90 thomas.f90 resize_array.f90 -o heatconduct.o`
 2. Run with `./heatconduct.o`
