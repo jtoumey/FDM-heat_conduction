@@ -25,7 +25,7 @@
 PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
-integer n,ii
+integer n,ii,jj
 parameter (n=81) ! number of grid points
 integer n_iter
 real dx,L,x(n)
@@ -72,14 +72,15 @@ end do
 !
 do while (tol .gt. 1.e-3)
    ! save IC to check convergence
-   T_old = T; 
+   T_old = T;
+   
    ! write current cycle, error, temperature at right bndry
    write(6,401)n_iter,tol,T(n)
    !
    !...Construct solution vector f
    !   interior points
    do ii = 2,n-1
-      ! interior pts
+      ! coefficients of f: c1, c2, c3, c4
       c1 = a + b*T(ii)**2
       c2 = (T(ii+1) - 2.*T(ii) + T(ii-1))/dx**2
       c3 = 2.*b*T(ii)
@@ -92,6 +93,7 @@ do while (tol .gt. 1.e-3)
    c5 = -2.*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
    f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
            + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
+   !
    !...Construct Jacobian
    !   Left boundary, Dirichlet b.c.
    ii = 1
@@ -126,12 +128,18 @@ do while (tol .gt. 1.e-3)
    T5 = 8.*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
    J_b(ii) = T1 - T2 - T3 + T4 - T5
    J_c(ii) = 0.
-    
+   
+!   write(*,*)J_a,J_b,J_c
    !   Solve for dT: J(T_0)*dT = -F(T_0)  
    call thomas(n,J_a,J_b,J_c,-f,dT)
-   dT = [0., dT]; ! Because the left value does not change (dirichlet)
-   T = T + dT;
-   
+   !
+   !...Update T
+   !
+   T(1) = T(1) + 0. ! Because the left value does not change (dirichlet)
+   do jj = 1,n-1
+      T(jj+1) = T(jj+1) + dT(jj)
+   end do
+   !write(*,*)T 
    !   Test convergence
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
