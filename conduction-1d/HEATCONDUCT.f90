@@ -30,8 +30,8 @@ parameter (n=81) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n),dT
-double precision f(n-1),J(n-1,n-1)
+double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n),dT(n)
+double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1)
 real tol
 real c1,c2,c3,c4,c5,c6
 real T1,T2,T3,T4,T5
@@ -95,25 +95,25 @@ do while (tol .gt. 1.e-3)
    !...Construct Jacobian
    !   Left boundary, Dirichlet b.c.
    ii = 1
-   J(ii,1) = 0.
-   J(ii,2) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
+   J_a(ii) = 0.
+   J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
            + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
-   J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+   J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
            - T(ii))/(2.*dx**2)
    ! Interior points
    do ii = 2,n-2
-        J(ii,1) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+        J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
                 - T(ii))/(2.*dx**2)
-        J(ii,2) =  b*(T(ii+2)   - T(ii))**2/(2.*dx**2) &
+        J_b(ii) =  b*(T(ii+2)   - T(ii))**2/(2.*dx**2) &
                 -  2.*(b*T(ii+1)**2 + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) &
                 -  2.*T(ii+1) + T(ii+2)))/dx**2
-        J(ii,3) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+        J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
                 - T(ii))/(2.*dx**2)
    end do
    
    !   Right boundary; Robin bc
    ii = n-1
-   J(ii,1) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
+   J_a(ii) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
    
    !   Coefficients of the derivative
    C6 = b*T(ii+1)**2 + a
@@ -124,11 +124,11 @@ do while (tol .gt. 1.e-3)
       + 2.)/dx**2
    T4 = (2.*T(ii+1)*b*h**2*(2.*T(ii+1) - 2.*T_inf))/C6**2
    T5 = 8.*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
-   J(ii,2) = T1 - T2 - T3 + T4 - T5
-   J(ii,3) = 0.
+   J_b(ii) = T1 - T2 - T3 + T4 - T5
+   J_c(ii) = 0.
     
    !   Solve for dT: J(T_0)*dT = -F(T_0)  
-   call thomas(n,J(:,1),J(:,2),J(:,3),-f,dT)
+   call thomas(n,J_a,J_b,J_c,-f,dT)
    dT = [0., dT]; ! Because the left value does not change (dirichlet)
    T = T + dT;
    
