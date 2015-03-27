@@ -25,8 +25,8 @@
 PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
-integer n,ii,jj
-parameter (n=81) ! number of grid points
+integer n,ii,jj,kk
+parameter (n=21) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
@@ -116,7 +116,11 @@ do while (tol .gt. 1.e-3)
    !   Right boundary; Robin bc
    ii = n-1
    J_a(ii) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
-   
+  
+   do kk = 1,n-1
+      write(6,501)J_a(kk),J_b(kk),J_c(kk)
+   end do
+ 
    !   Coefficients of the derivative
    C6 = b*T(ii+1)**2 + a
    T1 = 2.*b*h**2*(T(ii+1) - T_inf)**2/C6**2
@@ -138,8 +142,8 @@ do while (tol .gt. 1.e-3)
    T(1) = T(1) + 0. ! Because the left value does not change (dirichlet)
    do jj = 1,n-1
       T(jj+1) = T(jj+1) + dT(jj)
+      write(*,*)T(jj)
    end do
-   !write(*,*)T 
    !   Test convergence
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
@@ -147,4 +151,5 @@ end do
 !
 401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
 !
+501 format(3x,f14.7,3x,f14.7,3x,f14.7)
 END
