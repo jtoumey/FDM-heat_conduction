@@ -105,8 +105,7 @@ do while (tol .gt. 1.e-3)
    !   Left boundary, Dirichlet b.c.
    ii = 1
    J_a(ii) = 0.
-   J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
-       + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
+   J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2)! - 2.*(b*T(ii+1)**2  + a)/dx**2!+ (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
    J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
            - T(ii))/(2.*dx**2)
       write(6,501)J_a(ii),J_b(ii),J_c(ii)
@@ -159,5 +158,5 @@ end do
 !
 401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
 !
-501 format(3x,f14.7,3x,f14.7,3x,f14.7)
+501 format(3x,f20.7,3x,f20.7,3x,f20.7)
 END
