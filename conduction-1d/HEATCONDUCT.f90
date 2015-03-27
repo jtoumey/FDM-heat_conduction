@@ -73,7 +73,6 @@ end do
 do while (tol .gt. 1.e-3)
    ! save IC to check convergence
    T_old = T;
-   
    ! write current cycle, error, temperature at right bndry
    write(6,401)n_iter,tol,T(n)
    !
@@ -94,14 +93,23 @@ do while (tol .gt. 1.e-3)
    f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
            + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
    !
+   !...Test print
+   !
+!   do kk = 1,n-1
+!      write(6,*)f(kk)
+!   end do
+
+
+   !
    !...Construct Jacobian
    !   Left boundary, Dirichlet b.c.
    ii = 1
    J_a(ii) = 0.
    J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
-           + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
+       + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
    J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
            - T(ii))/(2.*dx**2)
+      write(6,501)J_a(ii),J_b(ii),J_c(ii)
    ! Interior points
    do ii = 2,n-2
         J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
