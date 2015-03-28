@@ -105,7 +105,8 @@ do while (tol .gt. 1.e-3)
    !   Left boundary, Dirichlet b.c.
    ii = 1
    J_a(ii) = 0.
-   J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2)! - 2.*(b*T(ii+1)**2  + a)/dx**2!+ (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
+   J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
+           + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
    J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
            - T(ii))/(2.*dx**2)
       write(6,501)J_a(ii),J_b(ii),J_c(ii)
@@ -124,9 +125,9 @@ do while (tol .gt. 1.e-3)
    ii = n-1
    J_a(ii) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
   
-   do kk = 1,n-1
-      write(6,501)J_a(kk),J_b(kk),J_c(kk)
-   end do
+ !!  do kk = 1,n-1
+   !   write(6,501)J_a(kk),J_b(kk),J_c(kk)
+ !  end do
  
    !   Coefficients of the derivative
    C6 = b*T(ii+1)**2 + a
@@ -143,6 +144,11 @@ do while (tol .gt. 1.e-3)
 !   write(*,*)J_a,J_b,J_c
    !   Solve for dT: J(T_0)*dT = -F(T_0)  
    call thomas(n,J_a,J_b,J_c,-f,dT)
+
+   ! test if dT was right
+   do kk = 1,n-1
+      write(6,*)dT(kk)
+   end do
    !
    !...Update T
    !
