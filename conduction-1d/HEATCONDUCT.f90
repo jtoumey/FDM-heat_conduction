@@ -26,7 +26,7 @@ PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
 integer n,ii,jj,kk
-parameter (n=11) ! number of grid points
+parameter (n=1001) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
@@ -70,7 +70,7 @@ end do
 !
 !...Begin Newton iteration
 !
-do while (tol .gt. 1.e-3)
+do while (tol .gt. 1.e-6)
    ! save IC to check convergence
    T_old = T;
    ! write current cycle, error, temperature at right bndry
