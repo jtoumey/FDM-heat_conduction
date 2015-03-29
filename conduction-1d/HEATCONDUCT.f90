@@ -26,7 +26,7 @@ PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
 integer n,ii,jj,kk
-parameter (n=1001) ! number of grid points
+parameter (n=81) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
