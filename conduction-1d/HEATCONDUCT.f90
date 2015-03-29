@@ -144,6 +144,7 @@ do while (tol .gt. 1.e-3)
 !   write(*,*)J_a,J_b,J_c
    !   Solve for dT: J(T_0)*dT = -F(T_0)  
    call thomas(n,J_a,J_b,J_c,-f,dT)
+   !call solve_tridiag(J_a,J_b,J_c,-f,dT,n)
 
    ! test if dT was right
    do kk = 1,n-1
