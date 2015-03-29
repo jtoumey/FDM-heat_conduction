@@ -26,11 +26,11 @@ PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
 integer n,ii,jj,kk
-parameter (n=21) ! number of grid points
+parameter (n=6) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n),dT(n)
+double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n),dT(n),phi(
 double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1)
 real tol
 real c1,c2,c3,c4,c5,c6
@@ -109,7 +109,7 @@ do while (tol .gt. 1.e-3)
            + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
    J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
            - T(ii))/(2.*dx**2)
-      write(6,501)J_a(ii),J_b(ii),J_c(ii)
+     ! write(6,501)J_a(ii),J_b(ii),J_c(ii)
    ! Interior points
    do ii = 2,n-2
         J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
@@ -156,7 +156,7 @@ do while (tol .gt. 1.e-3)
    T(1) = T(1) + 0. ! Because the left value does not change (dirichlet)
    do jj = 1,n-1
       T(jj+1) = T(jj+1) + dT(jj)
-      write(*,*)T(jj)
+!      write(*,*)T(jj)
    end do
    !   Test convergence
    tol = maxval(T - T_old)
