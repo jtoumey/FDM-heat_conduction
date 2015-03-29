@@ -26,12 +26,12 @@ PROGRAM HEATCONDUCT
 IMPLICIT NONE
 !
 integer n,ii,jj,kk
-parameter (n=6) ! number of grid points
+parameter (n=11) ! number of grid points
 integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
-double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n),dT(n),phi(
-double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1)
+double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n)
+double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1),phi(n-1)
 real tol
 real c1,c2,c3,c4,c5,c6
 real T1,T2,T3,T4,T5
@@ -143,25 +143,28 @@ do while (tol .gt. 1.e-3)
    
 !   write(*,*)J_a,J_b,J_c
    !   Solve for dT: J(T_0)*dT = -F(T_0)  
-   call thomas(n,J_a,J_b,J_c,-f,dT)
+   call thomas(n-1,J_a,J_b,J_c,-f,phi)
    !call solve_tridiag(J_a,J_b,J_c,-f,dT,n)
 
    ! test if dT was right
-   do kk = 1,n-1
-      write(6,*)dT(kk)
-   end do
+  ! do kk = 1,n-1
+  !    write(6,*)phi(kk)
+  ! end do
    !
    !...Update T
    !
    T(1) = T(1) + 0. ! Because the left value does not change (dirichlet)
    do jj = 1,n-1
-      T(jj+1) = T(jj+1) + dT(jj)
+      T(jj+1) = T(jj+1) + phi(jj)
 !      write(*,*)T(jj)
    end do
    !   Test convergence
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
 end do
+
+
+write(6,401)n_iter,tol,T(n)
 !
 401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
 !

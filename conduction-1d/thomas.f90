@@ -23,7 +23,7 @@
 !*************************************************************************!
 SUBROUTINE THOMAS(n,a,b,c,d,phi)
 integer i,n
-real a(n),b(n),c(n),d(n),phi(n)
+double precision a(n),b(n),c(n),d(n),phi(n)
 !
 !...Forward sweep
 !
