@@ -40,14 +40,14 @@ real k
 !...INPUT SECTION
 !
 !WRITE *,'ENTER NUMBER OF GRID NODES: '
-!READ(*,*) N
+!READ(*,*)n
 !
 !...System parameters
 !   Temperatures
 T_0    = 350. ! [K] temp at the left wall (given)
 T_L    = 500. ! [K] temp at the right wall (estimate)
 T_inf  = 500. ! [K] ambient temp (given)
-n_iter = 1
+n_iter = 0
 tol    = 1.
 !   physical parameters
 a = 0.01  ! [W/m-K]
@@ -65,16 +65,15 @@ dT_ic = (T_L-T_0)/float(n-1) ! [K] temp increment for IC
 !
 do ii = 1,n
    x(ii) = (ii-1)*dx
-   T(ii) = T_0+(ii-1)*dT_ic
+   T(ii) = T_0+(ii-1)*dT_ic ! temperature IC vector
 end do
 !
 !...Begin Newton iteration
 !
 do while (tol .gt. 1.e-6)
    ! save IC to check convergence
+   !
    T_old = T;
-   ! write current cycle, error, temperature at right bndry
-   write(6,401)n_iter,tol,T(n)
    !
    !...Construct solution vector f
    !   interior points
@@ -87,19 +86,12 @@ do while (tol .gt. 1.e-6)
       f(ii-1) = c1*c2 + c3*c4 + Q
    end do
    !   Right boundary, Robin b.c.
+   !
    ii = n
    k  = a + b*T(ii)**2
    c5 = -2.*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
    f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
            + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
-   !
-   !...Test print
-   !
-!   do kk = 1,n-1
-!      write(6,*)f(kk)
-!   end do
-
-
    !
    !...Construct Jacobian
    !   Left boundary, Dirichlet b.c.
@@ -109,26 +101,22 @@ do while (tol .gt. 1.e-6)
            + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
    J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
            - T(ii))/(2.*dx**2)
-     ! write(6,501)J_a(ii),J_b(ii),J_c(ii)
+   !   
    ! Interior points
    do ii = 2,n-2
-        J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
-                - T(ii))/(2.*dx**2)
-        J_b(ii) =  b*(T(ii+2)   - T(ii))**2/(2.*dx**2) &
-                -  2.*(b*T(ii+1)**2 + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) &
-                -  2.*T(ii+1) + T(ii+2)))/dx**2
-        J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
-                - T(ii))/(2.*dx**2)
+      J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+              - T(ii))/(2.*dx**2)
+      J_b(ii) =  b*(T(ii+2)   - T(ii))**2/(2.*dx**2) &
+              -  2.*(b*T(ii+1)**2 + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) &
+              -  2.*T(ii+1) + T(ii+2)))/dx**2
+      J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
+              - T(ii))/(2.*dx**2)
    end do
-   
+   !
    !   Right boundary; Robin bc
    ii = n-1
    J_a(ii) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
-  
- !!  do kk = 1,n-1
-   !   write(6,501)J_a(kk),J_b(kk),J_c(kk)
- !  end do
- 
+   !
    !   Coefficients of the derivative
    C6 = b*T(ii+1)**2 + a
    T1 = 2.*b*h**2*(T(ii+1) - T_inf)**2/C6**2
@@ -140,34 +128,35 @@ do while (tol .gt. 1.e-6)
    T5 = 8.*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
    J_b(ii) = T1 - T2 - T3 + T4 - T5
    J_c(ii) = 0.
-   
-!   write(*,*)J_a,J_b,J_c
-   !   Solve for dT: J(T_0)*dT = -F(T_0)  
+   !   
+   !...Solve for dT: J(T_0)*dT = -F(T_0)  
+   !
    call thomas(n-1,J_a,J_b,J_c,-f,phi)
-   !call solve_tridiag(J_a,J_b,J_c,-f,dT,n)
-
-   ! test if dT was right
-  ! do kk = 1,n-1
-  !    write(6,*)phi(kk)
-  ! end do
    !
    !...Update T
    !
    T(1) = T(1) + 0. ! Because the left value does not change (dirichlet)
    do jj = 1,n-1
       T(jj+1) = T(jj+1) + phi(jj)
-!      write(*,*)T(jj)
    end do
+   !
    !   Test convergence
+   !
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
+   !
+   ! write current cycle, error, temperature at right bndry
+   write(6,401)n_iter,tol,T(n)
 end do
 !
-write(6,401)n_iter,tol,T(n)
+!...call subroutine to write file
 !
 call write_results(n,x,T)
 !
-401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
+!...format statements
+!
+401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_R = ',f14.7,'  ***')
 !
 501 format(3x,f20.7,3x,f20.7,3x,f20.7)
+!
 END
