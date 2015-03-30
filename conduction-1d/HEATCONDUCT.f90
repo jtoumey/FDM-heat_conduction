@@ -162,9 +162,10 @@ do while (tol .gt. 1.e-6)
    tol = maxval(T - T_old)
    n_iter = n_iter + 1
 end do
-
-
+!
 write(6,401)n_iter,tol,T(n)
+!
+call write_results(n,x,T)
 !
 401 format(3x,'***  Iteration : ',i8,3x,'Residual : ',f14.7,3x,'T_L = ',f14.7,'  ***')
 !
