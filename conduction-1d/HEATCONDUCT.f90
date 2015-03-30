@@ -31,7 +31,7 @@ integer n_iter
 real dx,L,x(n)
 real a,b,Q,h
 double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n)
-double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1),phi(n-1)
+double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1),phi(n-1),dT(n-1)
 real tol
 real c1,c2,c3,c4,c5,c6
 real T1,T2,T3,T4,T5
@@ -131,13 +131,13 @@ do while (tol .gt. 1.e-6)
    !   
    !...Solve for dT: J(T_0)*dT = -F(T_0)  
    !
-   call thomas(n-1,J_a,J_b,J_c,-f,phi)
+   call thomas(n-1,J_a,J_b,J_c,-f,dT)
    !
    !...Update T
    !
    T(1) = T(1) + 0. ! Because the left value does not change (dirichlet)
    do jj = 1,n-1
-      T(jj+1) = T(jj+1) + phi(jj)
+      T(jj+1) = T(jj+1) + dT(jj)
    end do
    !
    !   Test convergence
