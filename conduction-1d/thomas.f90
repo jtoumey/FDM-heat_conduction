@@ -1,6 +1,6 @@
 !*************************************************************************!
 !                                                                         !
-!  Module:       THOMAS.F90                                               !
+!  Subroutine:   THOMAS.F90                                               !
 !                                                                         !
 !  Programmer:   Julian M. Toumey                                         !
 !                Madison, WI                                              !

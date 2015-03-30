@@ -1,4 +1,25 @@
-subroutine write_results(n,x,T)
+!*************************************************************************!
+!                                                                         !
+!  Subroutine:   WRITE_RESULTS.F90                                        !
+!                                                                         !
+!  Programmer:   Julian M. Toumey                                         !
+!                Madison, WI                                              !
+!                                                                         !
+!  Date:         29 March 2015                                            !
+!                                                                         !
+!  Language:     FORTRAN90                                                !
+!                                                                         !
+!  Description:  Prints formatted results in two-column format: distance  !
+!                along bar (in meters) and temperature (in Kelvin)        !
+!                                                                         !
+!  Inputs:                                                                !
+!                  n     Number of grid nodes                             !
+!                  x     Vector of length n containing the location of    !
+!                        nodes                                            !
+!                  T     Temperature                                      !
+!                                                                         !
+!*************************************************************************!
+SUBROUTINE WRITE_RESULTS(n,x,T)
 !
 IMPLICIT NONE
 integer n,ii
