@@ -17,6 +17,6 @@ end do
 !...Format statements
 !
 101 format(5x,'____x(n)____',5x,'____T(n)____')
-201 format(3x,f12.5,3x,f12.5)
+201 format(3x,f12.5,5x,f12.5)
 !
 end subroutine write_results
