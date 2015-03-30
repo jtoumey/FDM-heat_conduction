@@ -2,7 +2,8 @@ subroutine write_results(n,x,T)
 !
 IMPLICIT NONE
 integer n,ii
-double precision x(n),T(n)
+real x(n)
+double precision T(n)
 
 open(unit=7,file='temp_distr.dat')
 !
