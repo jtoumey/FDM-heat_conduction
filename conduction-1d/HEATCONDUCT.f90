@@ -16,7 +16,7 @@
 !                solved by Newton-Raphson iteration, and the linear       !
 !                system is solved by the Thomas Algorithm.                !
 !                                                                         !
-!  Output Files: TEMP  Two-column output: x-location vs. Temperature      !
+!  Output Files: temp_distr  Two-column output: x vs. Temp [K]            !
 !                                                                         !
 !*************************************************************************!
 PROGRAM HEATCONDUCT
