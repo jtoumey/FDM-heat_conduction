@@ -94,40 +94,7 @@ do while (tol .gt. 1.e-6)
            + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
    !
    !...Construct Jacobian
-   !   Left boundary, Dirichlet b.c.
-   ii = 1
-   J_a(ii) = 0.
-   J_b(ii) = b*(T(ii+2)   - T(ii))**2/(2.*dx**2) - 2.*(b*T(ii+1)**2 &
-           + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) - 2.*T(ii+1) + T(ii+2)))/dx**2
-   J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
-           - T(ii))/(2.*dx**2)
-   !   
-   ! Interior points
-   do ii = 2,n-2
-      J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
-              - T(ii))/(2.*dx**2)
-      J_b(ii) =  b*(T(ii+2)   - T(ii))**2/(2.*dx**2) &
-              -  2.*(b*T(ii+1)**2 + a)/dx**2 + (2.*T(ii+1)*b*(T(ii) &
-              -  2.*T(ii+1) + T(ii+2)))/dx**2
-      J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
-              - T(ii))/(2.*dx**2)
-   end do
-   !
-   !   Right boundary; Robin bc
-   ii = n-1
-   J_a(ii) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
-   !
-   !   Coefficients of the derivative
-   C6 = b*T(ii+1)**2 + a
-   T1 = 2.*b*h**2*(T(ii+1) - T_inf)**2/C6**2
-   T2 = 2.*T(ii+1)*b*(2.*T(ii+1) - 2.*T(ii) + 2.*dx*h*(T(ii+1) &
-      - T_inf)/C6)/dx**2
-   T3 = C6*(2.*dx*h/C6 - (4.*T(ii+1)*b*dx*h*(T(ii+1) - T_inf))/C6**2 &
-      + 2.)/dx**2
-   T4 = (2.*T(ii+1)*b*h**2*(2.*T(ii+1) - 2.*T_inf))/C6**2
-   T5 = 8.*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
-   J_b(ii) = T1 - T2 - T3 + T4 - T5
-   J_c(ii) = 0.
+   call calc_jacobian(n,dx,a,b,h,T_inf,T(n),J_a,J_b,J_c)
    !   
    !...Solve for dT: J(T_0)*dT = -F(T_0)  
    !
