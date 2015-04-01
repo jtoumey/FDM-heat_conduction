@@ -14,25 +14,33 @@
 !                bar. The Jacobian in this case is a tri-diagonal matrix, !
 !                but this subroutine returns three column vectors         !
 !                containing the sub diagonal, main diagonal, and sup      !
-!                diagonal. 
+!                diagonal.                                                !
 !                                                                         !
-!                  J_a   Sub diagonal                                     !
-!                  J_b   Main diagonal                                    !
-!                  J_c   Super diagonal                                   !
-!                  d     Right side of Linear System                      !
-!                  phi   Solution vector                                  !
+!                Inputs:                                                  !
+!                  n     Number of grid pts                               !
+!                  dx    grid spacing [m]                                 !
+!                  a     physical parameter [W/m-K]                       !
+!                  b     physical parameter [W/m-K^2]                     !
+!                  h     physical parameter [W/K-m^2]                     !
+!                  T_inf ambient temp [K]                                 !
+!                  T     size n; current temperature distribution [K]     !
+!                                                                         !
+!                Outputs:                                                 !
+!                  J_a   size n; Jacobian sub diagonal                    !
+!                  J_b   size n; Jacobian main diagonal                   !
+!                  J_c   size n; Jacobian super diagonal                  !
 !                                                                         !
 !*************************************************************************!
-SUBROUTINE CALC_JACOBIAN(n,dx,a,b,h,T_inf,T(n),J_a,J_b,J_c)
+SUBROUTINE CALC_JACOBIAN(n,dx,a,b,h,T_inf,T,J_a,J_b,J_c)
 IMPLICIT NONE
 !
-integer n,ii ! n from main, ii used only in this fcn
-real dx ! from main
-real a,b,h ! from main
-double precision T_inf,T(n)  ! from main
-double precision J_a(n-1),J_b(n-1),J_c(n-1)  ! the subroutine returns these three
-real c6 ! used only in this fcn
-real T1,T2,T3,T4,T5 ! used only in this fcn
+integer n,ii
+real dx 
+real a,b,h
+double precision T_inf,T(n) 
+double precision J_a(n-1),J_b(n-1),J_c(n-1) 
+real c6 
+real T1,T2,T3,T4,T5 
 !
 !...Construct Jacobian
 !   Left boundary, Dirichlet b.c.
@@ -56,6 +64,7 @@ J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
 end do
 !
 !   Right boundary; Robin bc
+!
 ii = n-1
 J_a(ii) = 2.*(b*T(ii+1)**2 + a)/(dx**2)
 !
