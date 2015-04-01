@@ -44,6 +44,7 @@ J_c(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
    - T(ii))/(2.*dx**2)
 !   
 ! Interior points
+!
 do ii = 2,n-2
 J_a(ii) = (b* T(ii+1)**2 + a)/dx**2 - T(ii+1)*b*2.*(T(ii+2) &
       - T(ii))/(2.*dx**2)
@@ -69,7 +70,5 @@ T4 = (2.*T(ii+1)*b*h**2*(2.*T(ii+1) - 2.*T_inf))/C6**2
 T5 = 8.*T(ii+1)**2*b**2*h**2*(T(ii+1) - T_inf)**2/C6**3
 J_b(ii) = T1 - T2 - T3 + T4 - T5
 J_c(ii) = 0.
-
-
-
+!
 END SUBROUTINE CALC_JACOBIAN
