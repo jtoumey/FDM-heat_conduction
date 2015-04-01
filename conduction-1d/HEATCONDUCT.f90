@@ -16,10 +16,7 @@
 !                solved by Newton-Raphson iteration, and the linear       !
 !                system is solved by the Thomas Algorithm.                !
 !                                                                         !
-! Output Files:  TEMP  Two-column output: x-location vs. Temperature      !
-!                                                                         !
-!                The algorithms are taken from the GNU Scientific         !
-!                Library (q.v.).                                          !
+!  Output Files: TEMP  Two-column output: x-location vs. Temperature      !
 !                                                                         !
 !*************************************************************************!
 PROGRAM HEATCONDUCT
@@ -94,7 +91,8 @@ do while (tol .gt. 1.e-6)
            + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
    !
    !...Construct Jacobian
-   call calc_jacobian(n,dx,a,b,h,T_inf,T(n),J_a,J_b,J_c)
+   !
+   call calc_jacobian(n,dx,a,b,h,T_inf,T,J_a,J_b,J_c)
    !   
    !...Solve for dT: J(T_0)*dT = -F(T_0)  
    !
