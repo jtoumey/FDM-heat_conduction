@@ -5,5 +5,5 @@
 * Tested with `gcc 4.6.3`
 
 ## Instructions:
-1. Compile with: `gfortran HEATCONDUCT.f90 thomas.f90 calc_jacobian.f90 write_results.f90 -o heatconduct.o`
+1. Compile with: `gfortran HEATCONDUCT.f90 thomas.f90 calc_jacobian.f90 calc_lineareqn.f90 write_results.f90 -o heatconduct.o`
 2. Run with `./heatconduct.o`
