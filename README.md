@@ -5,5 +5,8 @@
 * Tested with `gcc 4.6.3`
 
 ## Instructions:
+### With MAKEFILE
+1. Type `make clean`
+### Other way
 1. Compile with: `gfortran HEATCONDUCT.f90 solve_tdma.f90 calc_jacobian.f90 calc_lineareqn.f90 write_results.f90 -o heatconduct.o`
 2. Run with `./heatconduct.o`
