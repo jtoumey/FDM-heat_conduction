@@ -26,9 +26,9 @@
 !                  T     size n; current temperature distribution [K]     !
 !                                                                         !
 !                Outputs:                                                 !
-!                  J_a   size n; Jacobian sub diagonal                    !
-!                  J_b   size n; Jacobian main diagonal                   !
-!                  J_c   size n; Jacobian super diagonal                  !
+!                  J_a   size n-1; Jacobian sub diagonal                  !
+!                  J_b   size n-1; Jacobian main diagonal                 !
+!                  J_c   size n-1; Jacobian super diagonal                !
 !                                                                         !
 !*************************************************************************!
 SUBROUTINE CALC_JACOBIAN(n,dx,a,b,h,T_inf,T,J_a,J_b,J_c)
