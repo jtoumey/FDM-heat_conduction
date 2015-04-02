@@ -30,9 +30,6 @@ real a,b,Q,h
 double precision T_0,T_L,T_inf,T(n),dT_ic,T_old(n)
 double precision f(n-1),J_a(n-1),J_b(n-1),J_c(n-1),phi(n-1),dT(n-1)
 real tol
-real c1,c2,c3,c4,c5,c6
-real T1,T2,T3,T4,T5
-real k
 !
 !...INPUT SECTION
 !
