@@ -7,6 +7,7 @@
 ## Instructions:
 ### With MAKEFILE
 1. Type `make clean`
+2. Run with `./heatconduct.o`
 
 
 ### Other way
