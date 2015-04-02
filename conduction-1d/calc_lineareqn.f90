@@ -19,16 +19,15 @@
 !                  a     physical parameter [W/m-K]                       !
 !                  b     physical parameter [W/m-K^2]                     !
 !                  h     physical parameter [W/K-m^2]                     !
+!                  Q     physical parameter, source [W/m^3]               !
 !                  T_inf ambient temp [K]                                 !
 !                  T     size n; current temperature distribution [K]     !
 !                                                                         !
 !                Outputs:                                                 !
-!                  J_a   size n; Jacobian sub diagonal                    !
-!                  J_b   size n; Jacobian main diagonal                   !
-!                  J_c   size n; Jacobian super diagonal                  !
+!                  f     size n-1; linear discrete equations              !
 !                                                                         !
 !*************************************************************************!
-SUBROUTINE CALC_LINEAREQN(n,dx,a,b,h,Q,T_inf,T,f,k)
+SUBROUTINE CALC_LINEAREQN(n,dx,a,b,h,Q,T_inf,T,f)
 IMPLICIT NONE
 !
 integer n,ii
