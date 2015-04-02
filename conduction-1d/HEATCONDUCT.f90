@@ -74,7 +74,7 @@ do while (tol .gt. 1.e-6)
    !
    !...Construct the linear system
    !
-   call calc_lineareqn(n,dx,a,b,h,Q,T_inf,T,f,k)
+   call calc_lineareqn(n,dx,a,b,h,Q,T_inf,T,f)
    !
    !...Construct Jacobian
    !
