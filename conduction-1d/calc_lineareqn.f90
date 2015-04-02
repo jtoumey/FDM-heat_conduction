@@ -28,12 +28,12 @@
 !                  J_c   size n; Jacobian super diagonal                  !
 !                                                                         !
 !*************************************************************************!
-SUBROUTINE CALC_LINEAREQN(n,dx,a,b,Q,T_inf,T,f,k)
+SUBROUTINE CALC_LINEAREQN(n,dx,a,b,h,Q,T_inf,T,f,k)
 IMPLICIT NONE
 !
 integer n,ii
 real dx
-real a,b,Q
+real a,b,Q,h
 double precision T_inf,T(n)
 double precision f(n-1)
 real c1,c2,c3,c4,c5
