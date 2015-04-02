@@ -72,23 +72,9 @@ do while (tol .gt. 1.e-6)
    !
    T_old = T;
    !
-   !...Construct solution vector f
-   !   interior points
-   do ii = 2,n-1
-      ! coefficients of f: c1, c2, c3, c4
-      c1 = a + b*T(ii)**2
-      c2 = (T(ii+1) - 2.*T(ii) + T(ii-1))/dx**2
-      c3 = 2.*b*T(ii)
-      c4 = ((T(ii+1) - T(ii-1))/(2.*dx))**2
-      f(ii-1) = c1*c2 + c3*c4 + Q
-   end do
-   !   Right boundary, Robin b.c.
+   !...Construct the linear system
    !
-   ii = n
-   k  = a + b*T(ii)**2
-   c5 = -2.*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
-   f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
-           + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
+   call calc_lineareqn(n,dx,a,b,h,Q,T_inf,T,f,k)
    !
    !...Construct Jacobian
    !
