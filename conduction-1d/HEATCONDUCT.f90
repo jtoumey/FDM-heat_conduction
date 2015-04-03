@@ -46,7 +46,7 @@ tol    = 1.
 !   physical parameters
 a = 0.01  ! [W/m-K]
 b = 0.001 ! [W/m-K^2]
-Q = 1.e6  ! [W/m^3]
+!Q = 1.e6  ! [W/m^3]
 h = 50.   ! [W/K-m^2]
 !
 !...Grid setup
@@ -61,6 +61,10 @@ do ii = 1,n
    x(ii) = (ii-1)*dx
    T(ii) = T_0+(ii-1)*dT_ic ! temperature IC vector
 end do
+!
+!...calculate source for MMS
+!
+
 !
 !...Begin Newton iteration
 !
