@@ -42,16 +42,16 @@ real k
 !...Construct solution vector f
 !   interior points
 do ii = 2,n-1
-   !
-   !...calculate the source term for MMS
-   !
-   call calc_source(ii,dx)
-   !
    ! coefficients of f: c1, c2, c3, c4
    c1 = a + b*T(ii)**2
    c2 = (T(ii+1) - 2.*T(ii) + T(ii-1))/dx**2
    c3 = 2.*b*T(ii)
    c4 = ((T(ii+1) - T(ii-1))/(2.*dx))**2
+   !
+   !...calculate the source term for MMS
+   !
+   call calc_source(ii,dx,c1,c3,Q)
+   !
    f(ii-1) = c1*c2 + c3*c4 + Q
 end do
 !   Right boundary, Robin b.c.
@@ -64,14 +64,23 @@ f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
 !
 END SUBROUTINE CALC_LINEAREQN
 
-SUBROUTINE CALC_SOURCE(ii,dx)
+SUBROUTINE CALC_SOURCE(ii,dx,c1,c3,Q)
 IMPLICIT NONE
 !
 integer ii
 real dx
+real Q
+real c1,c3
+!...used only in this routine
+real x,e_x
+real d1,d2,d3,d4
+!...
+x  = float(ii-1)*dx
+d1 = exp(x)
+d2 = d1/(1+x)
+d3 = d1/(1+x)**2
+d4 = d1/(1+x)**3
 !
-Q = -(     )
-
-
-
+Q = -( c1*(d2 - 2.*d3 + 2.*d4) + c3*(d2 - d3)**2 )
+!
 END SUBROUTINE CALC_SOURCE
