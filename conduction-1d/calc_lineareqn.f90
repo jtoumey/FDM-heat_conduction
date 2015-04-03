@@ -42,6 +42,11 @@ real k
 !...Construct solution vector f
 !   interior points
 do ii = 2,n-1
+   !
+   !...calculate the source term for MMS
+   !
+   call calc_source(ii,dx)
+   !
    ! coefficients of f: c1, c2, c3, c4
    c1 = a + b*T(ii)**2
    c2 = (T(ii+1) - 2.*T(ii) + T(ii-1))/dx**2
@@ -58,3 +63,15 @@ f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
    + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
 !
 END SUBROUTINE CALC_LINEAREQN
+
+SUBROUTINE CALC_SOURCE(ii,dx)
+IMPLICIT NONE
+!
+integer ii
+real dx
+!
+Q = -(     )
+
+
+
+END SUBROUTINE CALC_SOURCE
