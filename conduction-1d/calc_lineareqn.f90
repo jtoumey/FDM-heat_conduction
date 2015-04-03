@@ -52,12 +52,18 @@ do ii = 2,n-1
    !
    call calc_source(ii,dx,c1,c3,Q)
    !
+   !write(*,*)Q
    f(ii-1) = c1*c2 + c3*c4 + Q
 end do
 !   Right boundary, Robin b.c.
 !
 ii = n
 k  = a + b*T(ii)**2
+!
+!...calculate the source term
+!
+call calc_source(ii,dx,k,c3,Q)
+!
 c5 = -2.*dx*h*(T(ii) - T_inf)/k + T(ii-1) 
 f(ii-1) = (a + b*T(ii)**2)*( c5 - 2.*T(ii  ) +T(ii-1))/(dx**2) &
    + (2. * b*T(ii)   )*((c5 -   T(ii-1))/(2.*dx))**2 + Q
